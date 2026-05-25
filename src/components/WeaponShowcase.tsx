@@ -128,7 +128,7 @@ const WEAPONS_DATA: Weapon[] = [
     }
   },
   {
-    id: 'z-drive',
+    id: 'pow-pow',
     name: 'POW-POW CHAOS MINIGUN',
     title: 'RAPID CHEMT_GATLING ARRAY',
     faction: 'Zaun',
@@ -149,32 +149,32 @@ const WEAPONS_DATA: Weapon[] = [
       { label: 'QUANTUM RESONANCE', value: 95, prefix: 'HIGH SPRAY' }
     ],
     specs: {
-      origin: 'Zaun - Firelights Hideout',
-      energySource: 'Cracked Hextech Resonance Fragment',
-      lethality: 'T-Grade (Tactical Time-Warp)',
-      volatility: 'Severe (Probability Cascade Warning)'
+      origin: 'Zaun - Sump Scrap Heap',
+      energySource: 'Volatile Chemical Gas Feed',
+      lethality: 'S-Grade (Rapid-Fire Piercing)',
+      volatility: 'Severe (Hazardous Overheat)'
     }
   },
   {
     id: 'z-drive',
-    name: 'POW-POW CHAOS MINIGUN',
-    title: 'RAPID CHEMT_GATLING ARRAY',
+    name: 'Z-DRIVE RESONATOR',
+    title: 'TEMPORAL RECONSTITUTION ENGINE',
     faction: 'Zaun',
-    creator: 'Jinx',
-    archetype: 'Multi-Barrel Chemical Gatling Gun',
-    serialNumber: 'PW-PW-MK1',
-    description: 'A multi-barrel heavy minigun that fires a relentless hail of bullet storms. Powered by volatile purple toxic gas feeds, Jinx uses it to slice through barricades and spread manic undercity mischief.',
+    creator: 'Ekko',
+    archetype: 'Zero-Drive Temporal Rewind Engine',
+    serialNumber: 'Z-DRV-MK1',
+    description: 'A miraculous time-manipulating device crafted by Ekko using salvaged hextech shards. By accelerating local pocket dimensions, it allows him to fracture and rewind timelines to rewrite tactical mistakes in battle.',
     imageUrl: imgViGatling,
-    primaryColor: 'from-emerald-950/40 to-teal-900/40',
-    borderColor: 'border-emerald-500/30 group-hover:border-emerald-400',
-    glowColor: 'shadow-[0_0_20px_rgba(16,185,129,0.15)] group-hover:shadow-[0_0_25px_rgba(16,185,129,0.25)]',
-    accentText: 'text-emerald-400',
-    bgGradient: 'bg-emerald-950/20',
+    primaryColor: 'from-cyan-950/40 to-teal-900/40',
+    borderColor: 'border-cyan-500/30 group-hover:border-cyan-400',
+    glowColor: 'shadow-[0_0_20px_rgba(6,182,212,0.15)] group-hover:shadow-[0_0_25px_rgba(6,182,212,0.25)]',
+    accentText: 'text-cyan-400',
+    bgGradient: 'bg-cyan-950/20',
     stats: [
-      { label: 'RATE OF DISCHARGE', value: 99, prefix: '1200 RPM' },
-      { label: 'COHESION STABILITY', value: 62, prefix: 'FRAGILE' },
-      { label: 'VOLATILITY RATING', value: 88, prefix: 'CHAOTIC' },
-      { label: 'QUANTUM RESONANCE', value: 95, prefix: 'HIGH SPRAY' }
+      { label: 'TEMPORAL FLUIDITY', value: 95, prefix: '0.1 SEC' },
+      { label: 'CHRONO CAPACITY', value: 85, prefix: '4 SEC REWIND' },
+      { label: 'VOLATILITY RATING', value: 75, prefix: 'STABLE' },
+      { label: 'QUANTUM RESONANCE', value: 90, prefix: 'RESONANT' }
     ],
     specs: {
       origin: 'Zaun - Firelights Hideout',

@@ -2,65 +2,125 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { ChevronDown, ShieldAlert, Cpu, Sparkles, Navigation } from 'lucide-react';
 
-const TOTAL_FRAMES = 720;
-const PRELOAD_CRITICAL_COUNT = 120; // Number of initial frames required to start scrolling
+const TOTAL_FRAMES = 1320;
+const PRELOAD_CRITICAL_COUNT = 60; // Number of initial frames required to start scrolling
 
-// Custom hook to preload images for the sequence
+// Custom hook to preload images for the sequence with advanced queue/network choking prevention
+function getFramePath(frameNum: number): string {
+  if (frameNum <= 240) {
+    const padded = String(frameNum).padStart(3, '0');
+    return `/seq-1/ezgif-frame-${padded}.jpg`;
+  } else if (frameNum <= 540) {
+    const subIdx = frameNum - 240;
+    const padded = String(subIdx).padStart(3, '0');
+    return `/seq-2/ezgif-frame-${padded}.jpg`;
+  } else if (frameNum <= 840) {
+    const subIdx = frameNum - 540;
+    const padded = String(subIdx).padStart(3, '0');
+    return `/seq-3/ezgif-frame-${padded}.jpg`;
+  } else if (frameNum <= 1140) {
+    const subIdx = frameNum - 840;
+    const padded = String(subIdx).padStart(3, '0');
+    return `/seq-4/ezgif-frame-${padded}.jpg`;
+  } else {
+    const subIdx = frameNum - 1140;
+    const padded = String(subIdx).padStart(3, '0');
+    return `/seq-5/ezgif-frame-${padded}.jpg`;
+  }
+}
+
 function useImageLoader(onProgress: (percent: number) => void) {
   const [loadedCount, setLoadedCount] = useState(0);
   const [criticalLoaded, setCriticalLoaded] = useState(false);
+  const [hasResolvedSomeCount, setHasResolvedSomeCount] = useState(0);
   const imagesRef = useRef<HTMLImageElement[]>([]);
 
   useEffect(() => {
     let active = true;
-    const loadedMap = new Set<number>();
 
-    // We'll load the critical frames first to let users interact quickly, then load everything else
-    const priorityIndices: number[] = [];
-    
-    // 1. Critical first chunk (every frame)
+    // Create chunks of indices for preloading without duplicates
+    const criticalIndices: number[] = [];
     for (let i = 1; i <= PRELOAD_CRITICAL_COUNT; i++) {
-      priorityIndices.push(i);
-    }
-    
-    // 2. Sample frames across the rest to build a coarse layout
-    for (let i = PRELOAD_CRITICAL_COUNT + 1; i <= TOTAL_FRAMES; i += 3) {
-      priorityIndices.push(i);
+      criticalIndices.push(i);
     }
 
-    // 3. Complete all missed frames in the background
+    const coarseIndices: number[] = [];
+    for (let i = PRELOAD_CRITICAL_COUNT + 1; i <= TOTAL_FRAMES; i += 3) {
+      coarseIndices.push(i);
+    }
+
+    const backgroundIndices: number[] = [];
+    const loadedTempSet = new Set([...criticalIndices, ...coarseIndices]);
     for (let i = PRELOAD_CRITICAL_COUNT + 1; i <= TOTAL_FRAMES; i++) {
-      if (i % 3 !== 0) {
-        priorityIndices.push(i);
+      if (!loadedTempSet.has(i)) {
+        backgroundIndices.push(i);
       }
     }
 
-    let loadedLocal = 0;
+    const allIndices = [...criticalIndices, ...coarseIndices, ...backgroundIndices];
+    const totalToLoad = allIndices.length;
+    let resolvedCount = 0;
+    let successCount = 0;
 
-    priorityIndices.forEach((frameNum) => {
-      const img = new Image();
-      const paddedNum = String(frameNum).padStart(3, '0');
-      img.src = `/sequence-1/cloud-${paddedNum}.jpg`;
-      
-      img.onload = () => {
-        if (!active) return;
-        imagesRef.current[frameNum] = img;
-        loadedLocal++;
-        
-        const overallPercent = Math.round((loadedLocal / TOTAL_FRAMES) * 100);
-        onProgress(overallPercent);
-        
-        if (loadedLocal >= PRELOAD_CRITICAL_COUNT && !criticalLoaded) {
-          setCriticalLoaded(true);
-        }
-        
-        setLoadedCount(loadedLocal);
-      };
+    // Dynamic queue loader using pipeline slots
+    const CHUNK_SIZE = 10;
+    let queueIndex = 0;
 
-      img.onerror = () => {
-        console.warn(`Failed loading frame ${frameNum}`);
-      };
-    });
+    const loadNextChunk = () => {
+      if (!active || queueIndex >= allIndices.length) return;
+
+      const chunk = allIndices.slice(queueIndex, queueIndex + CHUNK_SIZE);
+      queueIndex += CHUNK_SIZE;
+
+      let chunkResolvedCount = 0;
+
+      chunk.forEach((frameNum) => {
+        const img = new Image();
+        img.src = getFramePath(frameNum);
+
+        img.onload = () => {
+          if (!active) return;
+          imagesRef.current[frameNum] = img;
+          resolvedCount++;
+          successCount++;
+          chunkResolvedCount++;
+
+          const percent = Math.round((resolvedCount / totalToLoad) * 100);
+          onProgress(percent);
+
+          if (successCount >= PRELOAD_CRITICAL_COUNT && !criticalLoaded) {
+            setCriticalLoaded(true);
+          }
+
+          setLoadedCount(successCount);
+          setHasResolvedSomeCount(resolvedCount);
+
+          if (chunkResolvedCount === chunk.length) {
+            loadNextChunk();
+          }
+        };
+
+        img.onerror = () => {
+          if (!active) return;
+          resolvedCount++;
+          chunkResolvedCount++;
+
+          const percent = Math.round((resolvedCount / totalToLoad) * 100);
+          onProgress(percent);
+
+          setHasResolvedSomeCount(resolvedCount);
+
+          if (chunkResolvedCount === chunk.length) {
+            loadNextChunk();
+          }
+        };
+      });
+    };
+
+    // Spawn 5 independent loading pipelines to parallelize fetching without clogging browser limits
+    for (let i = 0; i < 5; i++) {
+      loadNextChunk();
+    }
 
     return () => {
       active = false;
@@ -70,7 +130,7 @@ function useImageLoader(onProgress: (percent: number) => void) {
   return {
     images: imagesRef.current,
     loadedCount,
-    isReady: criticalLoaded || loadedCount >= PRELOAD_CRITICAL_COUNT,
+    isReady: criticalLoaded || loadedCount >= PRELOAD_CRITICAL_COUNT || hasResolvedSomeCount >= PRELOAD_CRITICAL_COUNT,
   };
 }
 
