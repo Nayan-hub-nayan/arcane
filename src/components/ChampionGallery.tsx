@@ -15,6 +15,10 @@ export default function ChampionGallery() {
     offset: ["start start", "end end"]
   });
 
+  // Fade out and translate the header frame up as we scroll down to keep the wheel viewport clean
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
+  const headerY = useTransform(scrollYProgress, [0, 0.08], [0, -100]);
+
   // Calculate the mechanical lock audio frequency synthesis
   const playLockSound = (index: number) => {
     try {
@@ -164,7 +168,10 @@ export default function ChampionGallery() {
         </div>
 
         {/* Centered Premium HUD Info Header */}
-        <div className="absolute top-6 sm:top-8 z-20 flex flex-col items-center text-center">
+        <motion.div 
+          style={{ opacity: headerOpacity, y: headerY }}
+          className="absolute top-6 sm:top-8 z-20 flex flex-col items-center text-center"
+        >
           <p className="text-cyan-400 font-mono text-[10px] sm:text-xs uppercase tracking-widest mb-1 flex items-center gap-2">
             <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
             CORE ARCHIVE // STABILITY MATRIX
@@ -175,7 +182,7 @@ export default function ChampionGallery() {
           <p className="text-gray-500 font-mono text-[8px] sm:text-[10px] mt-1.5 uppercase tracking-wider max-w-md hidden sm:block">
             Scroll vertically to rotate sequence. Dossiers expand upon selection.
           </p>
-        </div>
+        </motion.div>
 
         {/* Centered Component Core Radial Alignment Wheel */}
         <div className="w-full max-w-4xl h-full flex items-center justify-center relative select-none mt-10 md:mt-6">
