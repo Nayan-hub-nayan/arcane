@@ -151,7 +151,7 @@ export default function ChampionGallery() {
       className="relative h-[380vh] bg-[#030712] text-white"
     >
       {/* Sticky viewport container (100vh) holding the layout in place */}
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 md:px-16 py-8 select-none z-10">
+      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4 sm:px-8 md:px-16 py-16 sm:py-24 md:py-32 select-none z-10">
         
         {/* Futuristic Grid Overlay on background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] opacity-25 pointer-events-none z-0" />

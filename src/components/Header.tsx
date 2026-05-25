@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, Zap } from 'lucide-react';
 
 interface HeaderProps {
@@ -6,8 +6,37 @@ interface HeaderProps {
 }
 
 export default function Header({ onTuningClick }: HeaderProps) {
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Always show header near the top of the page for immediate access
+      if (currentScrollY <= 80) {
+        setVisible(true);
+      } else if (currentScrollY > lastScrollY.current) {
+        // Scrolling down -> slide up out of frame
+        setVisible(false);
+      } else {
+        // Scrolling up -> drop down into frame
+        setVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline-variant/20 flex justify-between items-center px-6 py-4 md:px-12 transition-all duration-300">
+    <header 
+      className={`fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline-variant/20 flex justify-between items-center px-6 py-4 md:px-12 transition-transform duration-500 ease-out transform ${
+        visible ? 'translate-y-0' : '-translate-y-full'
+      }`}
+    >
       <div className="flex items-center gap-2">
         <button 
           onClick={onTuningClick}
@@ -31,11 +60,11 @@ export default function Header({ onTuningClick }: HeaderProps) {
       <div className="flex items-center gap-2">
         <button 
           onClick={() => {
-            const el = document.getElementById('hextech-core-section');
+            const el = document.getElementById('globe-section');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
           className="flex items-center justify-center p-2 rounded-full border border-primary/30 text-primary hover:bg-primary/10 hover:border-primary transition-all hover:scale-110 active:scale-95 animate-pulse"
-          title="Stabilize Hextech Core"
+          title="Secure Terminal Transmission"
           id="header-bolt-btn"
         >
           <Zap className="w-5 h-5 fill-current" />

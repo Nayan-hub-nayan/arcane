@@ -1,6 +1,16 @@
 import React, { useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'motion/react';
+import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { Zap, Crosshair, Sparkles, AlertCircle, Compass, CircleDot, RefreshCw, BarChart2, Shield } from 'lucide-react';
+
+// Import weapon artwork assets from the assets directory
+import imgFishbones from '../assets/ar-1.png';
+import imgAtlasGauntlets from '../assets/ar-2.png';
+import imgHextechPistol from '../assets/ar-3.png';
+import imgJinxGatling from '../assets/ar-4.png';
+import imgViGatling from '../assets/ar-5.png';
+
+
+
 
 interface WeaponStat {
   label: string;
@@ -42,7 +52,7 @@ const WEAPONS_DATA: Weapon[] = [
     archetype: 'Heavy Chemtech Rocket Artillery',
     serialNumber: 'FB-99-CHAOS',
     description: 'Jinx’s beloved shark-jawed rocket launcher. Built using scrap and Shimmer residue canisters found in the depths of the Sump, this heavy-impact weapon delivers highly destructive blasts with extreme visual flares.',
-    imageUrl: '/input_file_2.png',
+    imageUrl: imgFishbones,
     primaryColor: 'from-pink-900/40 to-purple-950/40',
     borderColor: 'border-pink-500/30 group-hover:border-pink-400',
     glowColor: 'shadow-[0_0_20px_rgba(236,72,153,0.15)] group-hover:shadow-[0_0_25px_rgba(236,72,153,0.25)]',
@@ -70,7 +80,7 @@ const WEAPONS_DATA: Weapon[] = [
     archetype: 'Industrial Demolition Gauntlets',
     serialNumber: 'HG-VI-MK2',
     description: 'Gargantuan brawling tools retrofitted with high-yield reactive Hextech resonators. Delivers physical kinetic compression forces capable of leveling solid titanium gates and breaking undercity crime rings.',
-    imageUrl: '/input_file_0.png',
+    imageUrl: imgAtlasGauntlets,
     primaryColor: 'from-amber-950/40 to-yellow-900/40',
     borderColor: 'border-amber-500/30 group-hover:border-amber-400',
     glowColor: 'shadow-[0_0_20px_rgba(245,158,11,0.15)] group-hover:shadow-[0_0_25px_rgba(245,158,11,0.25)]',
@@ -98,7 +108,7 @@ const WEAPONS_DATA: Weapon[] = [
     archetype: 'High-Precision Laser Core Pistol',
     serialNumber: 'MT-01-REVOLVER',
     description: 'A revolutionary prototype Hextech firearm that concentrates pure crystal magic into high-voltage energy projectiles. Beautifully detailed with gold engravings and an integrated glowing surge containment cylinder.',
-    imageUrl: '/input_file_3.png',
+    imageUrl: imgHextechPistol,
     primaryColor: 'from-cyan-950/40 to-blue-900/40',
     borderColor: 'border-cyan-500/30 group-hover:border-cyan-400',
     glowColor: 'shadow-[0_0_20px_rgba(6,182,212,0.15)] group-hover:shadow-[0_0_25px_rgba(6,182,212,0.25)]',
@@ -126,7 +136,35 @@ const WEAPONS_DATA: Weapon[] = [
     archetype: 'Multi-Barrel Chemical Gatling Gun',
     serialNumber: 'PW-PW-MK1',
     description: 'A multi-barrel heavy minigun that fires a relentless hail of bullet storms. Powered by volatile purple toxic gas feeds, Jinx uses it to slice through barricades and spread manic undercity mischief.',
-    imageUrl: '/input_file_1.png',
+    imageUrl: imgJinxGatling,
+    primaryColor: 'from-emerald-950/40 to-teal-900/40',
+    borderColor: 'border-emerald-500/30 group-hover:border-emerald-400',
+    glowColor: 'shadow-[0_0_20px_rgba(16,185,129,0.15)] group-hover:shadow-[0_0_25px_rgba(16,185,129,0.25)]',
+    accentText: 'text-emerald-400',
+    bgGradient: 'bg-emerald-950/20',
+    stats: [
+      { label: 'RATE OF DISCHARGE', value: 99, prefix: '1200 RPM' },
+      { label: 'COHESION STABILITY', value: 62, prefix: 'FRAGILE' },
+      { label: 'VOLATILITY RATING', value: 88, prefix: 'CHAOTIC' },
+      { label: 'QUANTUM RESONANCE', value: 95, prefix: 'HIGH SPRAY' }
+    ],
+    specs: {
+      origin: 'Zaun - Firelights Hideout',
+      energySource: 'Cracked Hextech Resonance Fragment',
+      lethality: 'T-Grade (Tactical Time-Warp)',
+      volatility: 'Severe (Probability Cascade Warning)'
+    }
+  },
+  {
+    id: 'z-drive',
+    name: 'POW-POW CHAOS MINIGUN',
+    title: 'RAPID CHEMT_GATLING ARRAY',
+    faction: 'Zaun',
+    creator: 'Jinx',
+    archetype: 'Multi-Barrel Chemical Gatling Gun',
+    serialNumber: 'PW-PW-MK1',
+    description: 'A multi-barrel heavy minigun that fires a relentless hail of bullet storms. Powered by volatile purple toxic gas feeds, Jinx uses it to slice through barricades and spread manic undercity mischief.',
+    imageUrl: imgViGatling,
     primaryColor: 'from-emerald-950/40 to-teal-900/40',
     borderColor: 'border-emerald-500/30 group-hover:border-emerald-400',
     glowColor: 'shadow-[0_0_20px_rgba(16,185,129,0.15)] group-hover:shadow-[0_0_25px_rgba(16,185,129,0.25)]',
@@ -146,6 +184,106 @@ const WEAPONS_DATA: Weapon[] = [
     }
   }
 ];
+
+export function InteractiveWeaponCardBody({ weapon, isSelected }: { weapon: Weapon; isSelected: boolean }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  
+  // Motion values for horizontal / vertical normalized offset mapping
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  // Glare positions and dynamic opacity
+  const glareX = useMotionValue(50);
+  const glareY = useMotionValue(50);
+  const glareOpacity = useMotionValue(0);
+  
+  // Inner image depth parallax shifts
+  const imgShiftX = useMotionValue(0);
+  const imgShiftY = useMotionValue(0);
+
+  // Springs for silky smooth hover tracking
+  const rotateX = useSpring(y, { stiffness: 150, damping: 22 });
+  const rotateY = useSpring(x, { stiffness: 150, damping: 22 });
+  
+  const glareXSpring = useSpring(glareX, { stiffness: 150, damping: 22 });
+  const glareYSpring = useSpring(glareY, { stiffness: 150, damping: 22 });
+  const glareOpacitySpring = useSpring(glareOpacity, { stiffness: 150, damping: 22 });
+
+  const imgShiftXSpring = useSpring(imgShiftX, { stiffness: 150, damping: 22 });
+  const imgShiftYSpring = useSpring(imgShiftY, { stiffness: 150, damping: 22 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    
+    // Normal coordinates from -0.5 to 0.5 center origin
+    const normX = (e.clientX - rect.left) / rect.width - 0.5;
+    const normY = (e.clientY - rect.top) / rect.height - 0.5;
+    
+    // Calculate 3D tilt rotation (up to 15 degrees)
+    // Left/right mouse movement tilts around Y axis, up/down tilts around X axis
+    x.set(normX * 15);
+    y.set(-normY * 15);
+    
+    // Position glossy glare hotspot
+    glareX.set(((e.clientX - rect.left) / rect.width) * 100);
+    glareY.set(((e.clientY - rect.top) / rect.height) * 100);
+    glareOpacity.set(0.45);
+
+    // Apply parallax distance to the weapon image container
+    imgShiftX.set(normX * 12);
+    imgShiftY.set(normY * 12);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    glareOpacity.set(0);
+    imgShiftX.set(0);
+    imgShiftY.set(0);
+  };
+
+  // Maps coordinates to radial glare gradient background
+  const glareBackgroundStyle = useTransform(
+    [glareXSpring, glareYSpring, glareOpacitySpring],
+    ([gX, gY, gOpacity]) => {
+      return `radial-gradient(circle at ${gX}% ${gY}%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 60%)`;
+    }
+  );
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: 'preserve-3d',
+      }}
+      className="w-full h-full flex items-center justify-center select-none overflow-hidden group relative cursor-pointer"
+      id={`interactive-card-${weapon.id}`}
+    >
+      {/* 3D Parallax Layer for Weapon artwork (Popped forward on Z-axis) */}
+      <motion.div 
+        style={{
+          x: imgShiftXSpring,
+          y: imgShiftYSpring,
+          z: 35,
+          transformStyle: 'preserve-3d',
+        }}
+        className="relative z-10 w-[90%] h-[90%] flex items-center justify-center"
+      >
+        <img
+          src={weapon.imageUrl}
+          alt={weapon.name}
+          className="w-full h-full object-contain select-none pointer-events-none transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_12px_40px_rgba(0,0,0,0.95)]"
+          referrerPolicy="no-referrer"
+        />
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export default function WeaponShowcase() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -395,9 +533,7 @@ export default function WeaponShowcase() {
               // Retrieve specific scroll binding metrics
               const motionProps = getTransformsForCard(idx);
               const isSelected = activeIdx === idx;
-              const isZaun = weapon.faction === 'Zaun';
 
-              // Procedurally render custom visual blueprints/structures to represent custom weapon style vector artwork (No borders, no shadow, no text - pure elegant weapon images)
               return (
                 <motion.div
                    key={weapon.id}
@@ -409,36 +545,13 @@ export default function WeaponShowcase() {
                      // Rigid bottom-left anchor origin for the rotating arc
                      transformOrigin: 'bottom left',
                      zIndex: idx + 10,
+                     perspective: '1200px',
+                     transformStyle: 'preserve-3d',
                    }}
-                   className="absolute inset-0 rounded-2xl bg-[#030611] flex items-center justify-center select-none overflow-hidden group border border-white/5 shadow-25"
+                   className="absolute inset-0 rounded-2xl select-none"
                    id={`weapon-card-${weapon.id}`}
                 >
-                  
-                  {/* Card Background Technical grid overlay */}
-                  <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] bg-[size:1.2rem_1.2rem] opacity-35 pointer-events-none z-0 rounded-2xl" />
-                  
-                  {/* Custom blueprint styling glowing background aura */}
-                  <div className={`absolute inset-0 bg-gradient-to-b ${weapon.primaryColor} opacity-20 pointer-events-none z-0 rounded-2xl transition-all duration-700`} />
-                  
-                  {/* Ambient center blur background */}
-                  <div className={`absolute w-[180px] h-[180px] rounded-full blur-[40px] opacity-25 pointer-events-none transition-all duration-700 ${
-                    weapon.id === 'fishbones' ? 'bg-pink-500' :
-                    weapon.id === 'atlas-gauntlets' ? 'bg-amber-500' :
-                    weapon.id === 'mercury-hammer' ? 'bg-cyan-500' :
-                    'bg-emerald-500'
-                  }`} />
-
-                  {/* Blueprint Vector Drawing Representation (Fully centered, expanded to fit full card with gentle hover scale response) */}
-                  <div className="relative z-10 w-[90%] h-[90%] flex items-center justify-center">
-                    <img
-                      src={weapon.imageUrl}
-                      alt={weapon.name}
-                      category-id={weapon.id}
-                      className="w-full h-full object-contain rounded-xl select-none pointer-events-none transition-all duration-700 group-hover:scale-105 drop-shadow-[0_10px_30px_rgba(0,0,0,0.85)]"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-
+                  <InteractiveWeaponCardBody weapon={weapon} isSelected={isSelected} />
                 </motion.div>
               );
             })}
