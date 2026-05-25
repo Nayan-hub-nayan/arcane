@@ -238,7 +238,7 @@ export default function ChampionGallery() {
 
           {/* Core container of 9 absolutely-positioned cards */}
           {/* We apply a responsive scale factor to ensure the coordinate map fits smaller viewports */}
-          <div className="relative w-[330px] h-[330px] sm:w-[480px] sm:h-[480px] md:w-[560px] md:h-[560px] lg:w-[640px] lg:h-[640px] transform scale-95 sm:scale-110 md:scale-100">
+          <div className="absolute w-[330px] h-[330px] sm:w-[480px] sm:h-[480px] md:w-[560px] md:h-[560px] lg:w-[640px] lg:h-[640px] transform scale-95 sm:scale-110 md:scale-100 flex items-center justify-center">
             {CHAMPIONS_DATA.map((champ, idx) => {
               // Retrieve the pre-computed animation coordinate profiles for this card
               const timelines = getTimelinesForCard(idx);
