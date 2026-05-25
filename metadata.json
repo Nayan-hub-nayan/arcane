@@ -1,0 +1,6 @@
+{
+  "name": "Arcane Portal",
+  "description": "An interactive world and champion explorer for the Arcane animated series.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
