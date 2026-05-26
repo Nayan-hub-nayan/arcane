@@ -9,23 +9,23 @@ const PRELOAD_CRITICAL_COUNT = 60; // Number of initial frames required to start
 function getFramePath(frameNum: number): string {
   if (frameNum <= 240) {
     const padded = String(frameNum).padStart(3, '0');
-    return `../seq/seq-1/ezgif-frame-${padded}.jpg`;
+    return `/seq/seq-1/ezgif-frame-${padded}.jpg`;
   } else if (frameNum <= 540) {
     const subIdx = frameNum - 240;
     const padded = String(subIdx).padStart(3, '0');
-    return `../seq/seq-2/ezgif-frame-${padded}.jpg`;
+    return `/seq/seq-2/ezgif-frame-${padded}.jpg`;
   } else if (frameNum <= 840) {
     const subIdx = frameNum - 540;
     const padded = String(subIdx).padStart(3, '0');
-    return `../seq/seq-3/ezgif-frame-${padded}.jpg`;
+    return `/seq/seq-3/ezgif-frame-${padded}.jpg`;
   } else if (frameNum <= 1140) {
     const subIdx = frameNum - 840;
     const padded = String(subIdx).padStart(3, '0');
-    return `../seq/seq-4/ezgif-frame-${padded}.jpg`;
+    return `/seq/seq-4/ezgif-frame-${padded}.jpg`;
   } else {
     const subIdx = frameNum - 1140;
     const padded = String(subIdx).padStart(3, '0');
-    return `../seq/seq-5/ezgif-frame-${padded}.jpg`;
+    return `/seq/seq-5/ezgif-frame-${padded}.jpg`;
   }
 }
 
