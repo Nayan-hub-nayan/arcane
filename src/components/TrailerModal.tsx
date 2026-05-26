@@ -67,7 +67,7 @@ export default function TrailerModal({ isOpen, onClose }: TrailerModalProps) {
                     League of Legends • Animated Masterpiece
                   </h4>
                   <p className="text-on-surface-variant text-xs mt-1 leading-relaxed">
-                    Set in the utopian region of Piltover and the oppressed underground of Zaun, 
+                    Set in the utopian region of Piltover and the oppressed underground of Zaun,
                     the story follows the origins of two iconic League champions-and the power that will tear them apart.
                   </p>
                 </div>
