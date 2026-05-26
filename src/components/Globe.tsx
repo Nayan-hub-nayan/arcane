@@ -3,21 +3,21 @@ import { motion } from 'motion/react';
 
 // Import the video asset created in the workspace
 import arcaneBoll from '../assets/arcane-boll.mp4';
-
+import { Radio } from 'lucide-react';
 export default function Globe() {
   const headingText = "ARCANE CONFIGURATION PROTOCOLS";
 
   return (
-    <footer 
-      id="globe-section" 
-      className="sticky bottom-0 w-full h-screen overflow-hidden border-t border-white/10 bg-[#02050E] flex items-center justify-center px-6 z-0"
-      /* 
-        STACKING CONTEXT & PERFORMANCE:
-        - Position: "sticky" with "bottom-0" ensures the footer sits pinned to the viewport.
-        - "z-0" places the footer at the base of the stack, behind the main contents (wrapped in "relative z-10").
-        - Rendering natively uses the GPU compositor via sticky/transform positioning, completely bypassing JS onScroll lag.
-        - High-contrast, high-definition backdrop uses HTML5 video with low opacity and high-performance blending mode.
-      */
+    <footer
+      id="globe-section"
+      className="sticky bottom-0 w-full h-screen overflow-hidden border-t border-white/10 bg-[#02050E] flex flex-col justify-center px-6 z-0"
+    /* 
+      STACKING CONTEXT & PERFORMANCE:
+      - Position: "sticky" with "bottom-0" ensures the footer sits pinned to the viewport.
+      - "z-0" places the footer at the base of the stack, behind the main contents (wrapped in "relative z-10").
+      - Rendering natively uses the GPU compositor via sticky/transform positioning, completely bypassing JS onScroll lag.
+      - High-contrast, high-definition backdrop uses HTML5 video with low opacity and high-performance blending mode.
+    */
     >
       {/* HTML5 video element running behind everything (z-0) */}
       <div className="absolute inset-0 z-0 h-full w-full opacity-50 mix-blend-screen pointer-events-none">
@@ -43,7 +43,7 @@ export default function Globe() {
       <div className="absolute inset-0 bg-[radial-gradient(#1e3a8a_1px,transparent_1px)] bg-[size:1.5rem_1.5rem] opacity-25 pointer-events-none z-1" />
 
       {/* Centered Animated Typography */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center pointer-events-none">
+      <div className="relative z-10 flex flex-col items-center h-full justify-center text-center pointer-events-none">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,6 +72,17 @@ export default function Globe() {
           <div className="w-16 h-[2px] bg-cyan-500/30 rounded shadow-[0_0_8px_rgba(6,182,212,0.5)] mt-2" />
         </motion.div>
       </div>
+      {/* Fine-designed Minimal Footer footer information */}
+      <div className="relative z-10 w-full py-4 px-6 text-center">
+        <div className="flex flex-col items-center gap-5 max-w-2xl mx-auto">
+
+          <p className="font-mono text-[9px] text-[#8a9dbf]/40 uppercase tracking-widest leading-loose mt-2">
+            © {new Date().getFullYear()} RIOT GAMES. PRODUCED BY LOYAL FANS OF ARCANE STABILIZATION. AUDIO & GRAPHICAL CHANNELS ENCRYPTED USING HEXTECH CIPHERS.
+          </p>
+
+        </div>
+      </div>
+
     </footer>
   );
 }

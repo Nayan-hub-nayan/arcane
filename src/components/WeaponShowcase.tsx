@@ -187,16 +187,16 @@ const WEAPONS_DATA: Weapon[] = [
 
 export function InteractiveWeaponCardBody({ weapon, isSelected }: { weapon: Weapon; isSelected: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  
+
   // Motion values for horizontal / vertical normalized offset mapping
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
+
   // Glare positions and dynamic opacity
   const glareX = useMotionValue(50);
   const glareY = useMotionValue(50);
   const glareOpacity = useMotionValue(0);
-  
+
   // Inner image depth parallax shifts
   const imgShiftX = useMotionValue(0);
   const imgShiftY = useMotionValue(0);
@@ -204,7 +204,7 @@ export function InteractiveWeaponCardBody({ weapon, isSelected }: { weapon: Weap
   // Springs for silky smooth hover tracking
   const rotateX = useSpring(y, { stiffness: 150, damping: 22 });
   const rotateY = useSpring(x, { stiffness: 150, damping: 22 });
-  
+
   const glareXSpring = useSpring(glareX, { stiffness: 150, damping: 22 });
   const glareYSpring = useSpring(glareY, { stiffness: 150, damping: 22 });
   const glareOpacitySpring = useSpring(glareOpacity, { stiffness: 150, damping: 22 });
@@ -215,16 +215,16 @@ export function InteractiveWeaponCardBody({ weapon, isSelected }: { weapon: Weap
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    
+
     // Normal coordinates from -0.5 to 0.5 center origin
     const normX = (e.clientX - rect.left) / rect.width - 0.5;
     const normY = (e.clientY - rect.top) / rect.height - 0.5;
-    
+
     // Calculate 3D tilt rotation (up to 15 degrees)
     // Left/right mouse movement tilts around Y axis, up/down tilts around X axis
     x.set(normX * 15);
     y.set(-normY * 15);
-    
+
     // Position glossy glare hotspot
     glareX.set(((e.clientX - rect.left) / rect.width) * 100);
     glareY.set(((e.clientY - rect.top) / rect.height) * 100);
@@ -265,7 +265,7 @@ export function InteractiveWeaponCardBody({ weapon, isSelected }: { weapon: Weap
       id={`interactive-card-${weapon.id}`}
     >
       {/* 3D Parallax Layer for Weapon artwork (Popped forward on Z-axis) */}
-      <motion.div 
+      <motion.div
         style={{
           x: imgShiftXSpring,
           y: imgShiftYSpring,
@@ -303,7 +303,7 @@ export default function WeaponShowcase() {
     let index = Math.floor(latestVal / segment);
     if (index >= WEAPONS_DATA.length) index = WEAPONS_DATA.length - 1;
     if (index < 0) index = 0;
-    
+
     // Smooth transitions between active cards
     if (index !== activeIdx) {
       setActiveIdx(index);
@@ -332,7 +332,7 @@ export default function WeaponShowcase() {
       x = "0%";
       rotate = 0;
       scale = 1;
-      
+
       // Card 0 fades to 0 when Card 1 fully covers it (at endProgressNext)
       opacity = useTransform(
         scrollYProgress,
@@ -381,32 +381,32 @@ export default function WeaponShowcase() {
   };
 
   return (
-    <section 
+    <section
       ref={containerRef}
-      id="weapons-showcase" 
+      id="weapons-showcase"
       className="relative h-[380vh] bg-[#02050f] text-white"
     >
       {/* Sticky full screen viewport wrapper */}
       <div className="sticky top-0 h-screen w-full flex flex-col md:flex-row items-center overflow-hidden px-4 sm:px-8 md:px-12 lg:px-20 py-8 select-none z-10">
-        
+
         {/* Abstract Hexagonal Cyber Grid Overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#091224_1px,transparent_1px),linear-gradient(to_bottom,#091224_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30 pointer-events-none z-0" />
-        
+
         {/* Dynamic Glowing Ambient Aura matching active weapon */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <div className="absolute top-1/2 left-1/2 md:left-2/3 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] blur-[150px] rounded-full transition-all duration-1000"
-               style={{
-                 background: activeWeapon.id === 'fishbones' ? 'rgba(236,72,153,0.12)' :
-                             activeWeapon.id === 'atlas-gauntlets' ? 'rgba(245,158,11,0.12)' :
-                             activeWeapon.id === 'mercury-hammer' ? 'rgba(6,182,212,0.12)' :
-                             'rgba(16,185,129,0.12)'
-               }}
+            style={{
+              background: activeWeapon.id === 'fishbones' ? 'rgba(236,72,153,0.12)' :
+                activeWeapon.id === 'atlas-gauntlets' ? 'rgba(245,158,11,0.12)' :
+                  activeWeapon.id === 'mercury-hammer' ? 'rgba(6,182,212,0.12)' :
+                    'rgba(16,185,129,0.12)'
+            }}
           />
         </div>
 
         {/* ==================== LEFT COLUMN: FIXED CONSOLE HEADLINE & ACTIVE DATA ==================== */}
         <div className="relative z-10 w-full md:w-5/12 flex flex-col justify-between h-[38vh] md:h-full py-4 md:py-12 pr-0 md:pr-10 border-b md:border-b-0 md:border-r border-white/5">
-          
+
           {/* Section Header Title & Subtitles */}
           <div>
             <div className="flex items-center gap-2 mb-2 text-primary">
@@ -417,7 +417,7 @@ export default function WeaponShowcase() {
             </div>
 
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-none uppercase">
-              ARMAMENT <br/>
+              ARMAMENT <br />
               <span className="text-glow bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">SHOWCASE</span>
             </h2>
 
@@ -439,9 +439,8 @@ export default function WeaponShowcase() {
               >
                 {/* Active weapon identification tag */}
                 <div className="flex items-center gap-2.5">
-                  <span className={`font-mono text-[9px] sm:text-[10px] font-bold px-2 py-0.5 border rounded-sm uppercase bg-black/40 ${
-                    activeWeapon.faction === 'Zaun' ? 'text-purple-400 border-purple-500/20' : 'text-cyan-400 border-cyan-500/20'
-                  }`}>
+                  <span className={`font-mono text-[9px] sm:text-[10px] font-bold px-2 py-0.5 border rounded-sm uppercase bg-black/40 ${activeWeapon.faction === 'Zaun' ? 'text-purple-400 border-purple-500/20' : 'text-cyan-400 border-cyan-500/20'
+                    }`}>
                     {activeWeapon.faction} ORIGIN
                   </span>
                   <span className="font-mono text-[9px] sm:text-[10px] text-gray-500">
@@ -478,16 +477,15 @@ export default function WeaponShowcase() {
                       </div>
                       <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden border border-white/5 relative">
                         {/* Static light ticking grid lines inside the stats bar */}
-                        <motion.div 
+                        <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${stat.value}%` }}
                           transition={{ duration: 0.6, delay: sIdx * 0.05 }}
-                          className={`h-full rounded-full bg-gradient-to-r ${
-                            activeWeapon.id === 'fishbones' ? 'from-pink-500 to-purple-500' :
-                            activeWeapon.id === 'atlas-gauntlets' ? 'from-amber-600 to-yellow-400' :
-                            activeWeapon.id === 'mercury-hammer' ? 'from-cyan-500 to-blue-500' :
-                            'from-emerald-500 to-teal-400'
-                          }`}
+                          className={`h-full rounded-full bg-gradient-to-r ${activeWeapon.id === 'fishbones' ? 'from-pink-500 to-purple-500' :
+                              activeWeapon.id === 'atlas-gauntlets' ? 'from-amber-600 to-yellow-400' :
+                                activeWeapon.id === 'mercury-hammer' ? 'from-cyan-500 to-blue-500' :
+                                  'from-emerald-500 to-teal-400'
+                            }`}
                         />
                       </div>
                     </div>
@@ -513,14 +511,14 @@ export default function WeaponShowcase() {
 
         {/* ==================== RIGHT COLUMN: MOTION BLUEPRINT CONTAINER GRID ==================== */}
         <div id="weapon-frame-viewport" className="w-full md:w-7/12 h-[54vh] md:h-full flex items-center justify-center relative select-none mt-4 md:mt-0">
-          
+
           {/* Central Compass dial grid backdrop */}
           <div className="absolute w-[260px] h-[260px] sm:w-[380px] sm:h-[380px] md:w-[440px] md:h-[440px] lg:w-[500px] lg:h-[500px] border border-white/5 rounded-full pointer-events-none flex items-center justify-center z-0">
             <div className="absolute w-[80%] h-[80%] border border-dashed border-white/5 rounded-full animate-[spin_60s_linear_infinite]" />
             <div className="absolute w-[45%] h-[45%] border border-[#1e293b]/40 rounded-full" />
-            
+
             <CircleDot className="w-8 h-8 text-slate-800 absolute opacity-20" />
-            
+
             {/* Dynamic radar tracking line sweeps */}
             <div className="absolute top-0 bottom-0 left-1/2 w-px bg-white/5 transform rotate-45" />
             <div className="absolute top-0 bottom-0 left-1/2 w-px bg-white/5 transform rotate-135" />
@@ -536,20 +534,20 @@ export default function WeaponShowcase() {
 
               return (
                 <motion.div
-                   key={weapon.id}
-                   style={{
-                     x: motionProps.x,
-                     rotate: motionProps.rotate,
-                     scale: motionProps.scale,
-                     opacity: motionProps.opacity,
-                     // Rigid bottom-left anchor origin for the rotating arc
-                     transformOrigin: 'bottom left',
-                     zIndex: idx + 10,
-                     perspective: '1200px',
-                     transformStyle: 'preserve-3d',
-                   }}
-                   className="absolute inset-0 rounded-2xl select-none"
-                   id={`weapon-card-${weapon.id}`}
+                  key={weapon.id}
+                  style={{
+                    x: motionProps.x,
+                    rotate: motionProps.rotate,
+                    scale: motionProps.scale,
+                    opacity: motionProps.opacity,
+                    // Rigid bottom-left anchor origin for the rotating arc
+                    transformOrigin: 'bottom left',
+                    zIndex: idx + 10,
+                    perspective: '1200px',
+                    transformStyle: 'preserve-3d',
+                  }}
+                  className="absolute inset-0 rounded-2xl select-none"
+                  id={`weapon-card-${weapon.id}`}
                 >
                   <InteractiveWeaponCardBody weapon={weapon} isSelected={isSelected} />
                 </motion.div>

@@ -32,13 +32,12 @@ export default function Header({ onTuningClick }: HeaderProps) {
   }, []);
 
   return (
-    <header 
-      className={`fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-outline-variant/20 flex justify-between items-center px-6 py-4 md:px-12 transition-transform duration-500 ease-out transform ${
-        visible ? 'translate-y-0' : '-translate-y-full'
-      }`}
+    <header
+      className={`fixed top-0 w-full z-50  flex justify-between items-center px-6 py-4 md:px-12 transition-transform duration-500 ease-out transform ${visible ? 'translate-y-0' : '-translate-y-full'
+        }`}
     >
       <div className="flex items-center gap-2">
-        <button 
+        <button
           onClick={onTuningClick}
           className="p-1 hover:text-primary transition-colors text-on-surface hover:scale-105"
           title="Tuning Desk"
@@ -58,7 +57,7 @@ export default function Header({ onTuningClick }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-2">
-        <button 
+        <button
           onClick={() => {
             const el = document.getElementById('globe-section');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
